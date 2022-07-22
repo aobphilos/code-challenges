@@ -1,0 +1,15 @@
+# Add files here to ignore them from prettier formatting
+
+# output from compiler
+/dist
+/coverage
+**/generated/**
+**/swagger-ui/**
+
+# packages
+**/node_modules/**
+
+# package lock
+pnpm-lock*
+package-lock*
+yarn.lock

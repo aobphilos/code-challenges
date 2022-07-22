@@ -332,3 +332,6 @@ GitHub.sublime-settings
 
 .vscode/settings.json
 .vscode/launch.json
+
+generated
+**/*.js
