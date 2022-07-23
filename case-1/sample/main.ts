@@ -58,6 +58,7 @@ const createResponse = (_mapUserIdToContexts: object) => {
 };
 
 (() => {
+  console.log("\nTotal response time: ");
   const start = hrtime.bigint();
 
   const dataPath = path.join(__dirname, "../data/user-contexts.json");
@@ -83,10 +84,17 @@ const createResponse = (_mapUserIdToContexts: object) => {
   );
 
   writeFile(result, outputDir, filePath);
-
   const writeFileTime = hrtime.bigint();
 
   console.log(
     `Write file time: ${Number(writeFileTime - generatedTime) / 1e6} ms`
+  );
+
+  const totalUsage = process.memoryUsage();
+
+  console.log("\nTotal memory usage:");
+  console.log(`RSS usage: ${(totalUsage.rss / 1024 / 1024).toFixed(2)} MB`);
+  console.log(
+    `Heap usage: ${(totalUsage.heapUsed / 1024 / 1024).toFixed(2)} MB`
   );
 })();
