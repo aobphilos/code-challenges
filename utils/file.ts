@@ -15,9 +15,9 @@ export async function writeFileAsync(
 }
 
 export function readJSONFile(filePath: string) {
-  return JSON.parse(fs.readFileSync(filePath, "utf8"));
+  return fs.readJSONSync(filePath, { throws: false });
 }
 
 export async function readJSONFileAsync(filePath: string) {
-  return JSON.parse(await fs.readFile(filePath, "utf8"));
+  return fs.readJSON(filePath, { throws: false });
 }
