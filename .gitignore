@@ -335,3 +335,5 @@ GitHub.sublime-settings
 
 generated
 **/*.js
+!jest.config.js
+!jest.preset.js
