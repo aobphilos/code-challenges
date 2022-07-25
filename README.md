@@ -1,14 +1,19 @@
 # Code Challenges
+
 A coding practice repository for all challenging issues.
 
 ---
+
 ### Getting Start
+
 This project uses **NodeJS** at version 16.5 and uses **PNPM** mainly.
 
 #### Installation
+
 `pnpm install`
 
 #### Build
+
 `pnpm build`
 
 ---
@@ -18,18 +23,33 @@ This project uses **NodeJS** at version 16.5 and uses **PNPM** mainly.
 We have a processing challenge. That takes quite a lot of time. In this case, it's about transforming the JSON data, which is quite complex and extensive.
 
 ##### Run `TS` file
-`pnpm dev:sample:1`
+
+`pnpm dev <target file>`
+
+##### Ex.
+
+```sh
+pnpm dev case-1/base/main.ts
+```
 
 ##### Run `JS` file
-`pnpm start:sample:1`
+
+`pnpm start <target file>`
+
+##### Ex.
+
+```sh
+pnpm start case-1/base/main.js
+```
 
 ##### Output
 
 ```sh
-Load data time: 327.520436 ms
-Execution time: 5443.761359 ms
-Write file time: 208.105977 ms
+Load data time: 284.422437 ms
+
+Transform data time: 5126.855902 ms
+
+Write file time: 436.222832 ms
+
+Total memory usage: => rss: 207.23 MB, heapUsed: 80.89 MB
 ```
-
-
-
