@@ -1,18 +1,18 @@
 import path from "path";
-import { hrtime } from "node:process";
 import { keys, isEmpty, mapValues } from "lodash";
 import { unflatten } from "flat";
 
-import { writeFile, readJSONFile } from "../../utils/file";
+import { writeFile, readJSON } from "../../utils/file";
+import { memoryUsageWrapper, timeUsageWrapper } from "../../utils/wrapper";
 
-interface userInfoJSON {
+interface UserInfoJSON {
   key: string;
   value: string | string[];
 }
 
 export class UserInfo {
   private json: Record<string, unknown>[];
-  constructor(userInfos: userInfoJSON[]) {
+  constructor(userInfos: UserInfoJSON[]) {
     this.json = userInfos.map((userInfo) => {
       if (Array.isArray(userInfo.value)) {
         return {
@@ -44,38 +44,24 @@ export class UserInfo {
   }
 }
 
-const createResponse = (_mapUserIdToContexts: object) => {
+function createResponse(_mapUserIdToContexts: Record<string, unknown[]>) {
   let data = {};
   if (!isEmpty(_mapUserIdToContexts)) {
     data = mapValues(_mapUserIdToContexts, (arr) => {
-      return Object.assign({}, ...new UserInfo(arr).toJSON());
+      return Object.assign({}, ...new UserInfo(arr as UserInfoJSON[]).toJSON());
     });
   }
   return {
     ids: keys(data),
     data: unflatten(data, {})
   };
-};
+}
 
-(() => {
-  console.log("\nTotal response time: ");
-  const start = hrtime.bigint();
+async function loadData(): Promise<Record<string, unknown[]>> {
+  return readJSON(path.join(__dirname, "../data/user-contexts.json"));
+}
 
-  const dataPath = path.join(__dirname, "../data/user-contexts.json");
-  const UserContexts = readJSONFile(dataPath);
-
-  const loadDataTime = hrtime.bigint();
-
-  console.log(`Load data time: ${Number(loadDataTime - start) / 1e6} ms`);
-
-  const result = createResponse(UserContexts);
-
-  const generatedTime = hrtime.bigint();
-
-  console.log(
-    `Execution time: ${Number(generatedTime - loadDataTime) / 1e6} ms`
-  );
-
+async function main() {
   const outputDir = path.join(__dirname, "../generated");
   const fileExt = path.extname(__filename);
   const filePath = path.join(
@@ -83,18 +69,21 @@ const createResponse = (_mapUserIdToContexts: object) => {
     `${path.basename(__filename, fileExt)}.json`
   );
 
-  writeFile(result, outputDir, filePath);
-  const writeFileTime = hrtime.bigint();
-
-  console.log(
-    `Write file time: ${Number(writeFileTime - generatedTime) / 1e6} ms`
+  const wrapperLoadData = timeUsageWrapper(loadData, "Load data");
+  const wrapperCreateResponse = timeUsageWrapper(
+    createResponse,
+    "Transform data"
   );
+  const wrapperWriteFile = timeUsageWrapper(writeFile, "Write file");
 
-  const totalUsage = process.memoryUsage();
+  const userContexts = await wrapperLoadData();
 
-  console.log("\nTotal memory usage:");
-  console.log(`RSS usage: ${(totalUsage.rss / 1024 / 1024).toFixed(2)} MB`);
-  console.log(
-    `Heap usage: ${(totalUsage.heapUsed / 1024 / 1024).toFixed(2)} MB`
-  );
+  const result = wrapperCreateResponse(userContexts);
+
+  await wrapperWriteFile(result, outputDir, filePath);
+}
+
+(async () => {
+  const wrapperMain = memoryUsageWrapper(main, "Total");
+  await wrapperMain();
 })();
