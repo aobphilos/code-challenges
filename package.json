@@ -9,7 +9,7 @@
     "test": "jest -c jest.config.js",
     "dev": "ts-node",
     "start": "pnpm build && node",
-    "challenge": "pnpm start ./case-1/solutions/dummy.js"
+    "challenge": "pnpm start ./case-1/solutions/aob.js"
   },
   "keywords": [],
   "author": "",
