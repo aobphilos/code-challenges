@@ -53,3 +53,15 @@ Write file time: 436.222832 ms
 
 Total memory usage: => rss: 207.23 MB, heapUsed: 80.89 MB
 ```
+
+---
+
+<br>
+
+### `*` Pull Request `*`
+
+Always check the correctness before opening the PR.
+
+> Modify the path to run the challenge command to match the work submitted.
+>
+> ex. "**_challenge_**": "pnpm start ./case-1/solutions/`<target>`.js"
