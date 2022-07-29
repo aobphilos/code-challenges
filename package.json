@@ -7,9 +7,9 @@
     "lint": "eslint --fix .",
     "build": "tsc -p tsconfig.json",
     "test": "jest -c jest.config.js",
-    "dev": "ts-node",
+    "dev": "ts-node ./case-1/solutions/usingMap.ts",
     "start": "pnpm build && node",
-    "challenge": "pnpm start ./case-1/solutions/dummy.js"
+    "challenge": "pnpm start ./case-1/solutions/usingMap.js"
   },
   "keywords": [],
   "author": "",
