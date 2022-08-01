@@ -9,7 +9,7 @@
     "test": "jest -c jest.config.js",
     "dev": "ts-node",
     "start": "pnpm build && node",
-    "challenge": "pnpm start ./case-1/solutions/dummy.js"
+    "challenge": "pnpm start ./case-1/solutions/fastest.js"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,7 @@
   "dependencies": {
     "flat": "^5.0.2",
     "fs-extra": "^10.1.0",
+    "is-json": "^2.0.1",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
