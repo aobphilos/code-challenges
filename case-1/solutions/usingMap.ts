@@ -1,48 +1,11 @@
 import path from "path";
-
 import { writeFile, readJSON } from "../../utils/file";
 import { memoryUsageWrapper, timeUsageWrapper } from "../../utils/wrapper";
+import memoize, { Options } from "memoizee";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+// const memProfile = require("memoizee/profile");
 
-interface UserInfoJSON {
-  key: string;
-  value: string | string[];
-}
-
-export class UserInfo {
-  private json: Record<string, unknown>[];
-  constructor(userInfos: UserInfoJSON[]) {
-    this.json = userInfos.map((userInfo) => {
-      if (Array.isArray(userInfo.value)) {
-        return {
-          [userInfo.key]: userInfo.value.map((v) => {
-            return this.isJsonString(v) ? JSON.parse(v) : v;
-          })
-        };
-      } else {
-        return {
-          [userInfo.key]: this.isJsonString(userInfo.value)
-            ? JSON.parse(userInfo.value)
-            : userInfo.value
-        };
-      }
-    });
-  }
-
-  toJSON() {
-    return this.json;
-  }
-
-  public isJsonString(str: string): boolean {
-    try {
-      JSON.parse(str);
-    } catch (err) {
-      return false;
-    }
-    return true;
-  }
-}
-
-type Value = (string | number | (string | number)[])
+type Value = (string | string[])
 
 
 function toObject(map: Map<string, unknown>): Record<string, unknown> {
@@ -50,10 +13,42 @@ function toObject(map: Map<string, unknown>): Record<string, unknown> {
 }
 
 
+
+function parse(value: unknown): any{
+  if(Array.isArray(value)){
+    return value.map(v=>memoizedParseStringValue(v));
+  }else return memoizedParseStringValue(value);
+}
+
+function parseStringValue(value: unknown): any{
+  if(typeof value !== "string"){
+    return value;
+  }
+  const [err, result] = memoizedSafeJsonParse(value);
+  if(err === null){
+    return result;
+  }else{
+    return value;
+  }
+}
+
+function safeJsonParse(str: string) : [null, any] | [unknown]{
+  try {
+    return [null, JSON.parse(str)];
+  } catch (err) {
+    return [err];
+  }
+}
+
+const options: Options<never> = { max: 1000, maxAge: 1000, profileName: "safeJsonParse" };
+const memoizedSafeJsonParse = memoize(safeJsonParse, options);
+const memoizedParseStringValue = memoize(parseStringValue, options);
+const memoizedParse = memoize(parse,options);
+
 function setMap(key: string, value: Value, map: Map<string, unknown>): void {
   //base case
   if (!key.includes(".")) {
-    map.set(key, value);
+    map.set(key, memoizedParse(value));
   } else {
     //recursive case
     const keys = key.split(/\.(.*)/s); 
@@ -110,6 +105,7 @@ async function main() {
   const result = wrapperCreateResponse(userContexts);
 
   await wrapperWriteFile(result, outputDir, filePath);
+  // console.log(memProfile.log());
 }
 
 (async () => {
