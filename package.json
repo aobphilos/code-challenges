@@ -9,7 +9,8 @@
     "test": "jest -c jest.config.js",
     "dev": "ts-node",
     "start": "pnpm build && node",
-    "challenge": "pnpm start ./case-1/solutions/dummy.js"
+    "challengeSlow": "pnpm start ./case-1/solutions/removeJsonparseSlow.ts",
+    "challengeFast": "pnpm start ./case-1/solutions/removeJsonparseFast.ts"
   },
   "keywords": [],
   "author": "",
