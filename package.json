@@ -9,7 +9,8 @@
     "test": "jest -c jest.config.js",
     "dev": "ts-node ./case-1/solutions/usingMap.ts",
     "start": "pnpm build && node",
-    "challenge": "pnpm start ./case-1/solutions/removeJsonparseFast.js"
+    "benchmark": "pnpm start ./case-1/solutions/dummy.js",
+    "challenge": "pnpm start ./case-1/solutions/dummy.js"
   },
   "keywords": [],
   "author": "",
